@@ -16,6 +16,9 @@ const thresholdSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  project_image: {
+    type: String,
+  },
   blocks: [{
     type: {
       type: String,
