@@ -1,9 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
 require('dotenv').config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,20 +10,10 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
 
-const upload = multer({ storage: storage });
+
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -49,13 +38,15 @@ app.get('/api/threshold', async (req, res) => {
   }
 });
 
-app.post('/api/threshold', upload.single('project_image'), async (req, res) => {
+app.post('/api/threshold', async (req, res) => {
+
   const threshold = new Threshold({
     title: req.body.title,
     desc: req.body.desc,
     content: req.body.content,
     date: req.body.date,
-    project_image: req.file ? `/uploads/${req.file.filename}` : req.body.project_image,
+    project_image: req.body.project_image,
+
     blocks: req.body.blocks ? JSON.parse(req.body.blocks) : [],
   });
 
@@ -67,7 +58,8 @@ app.post('/api/threshold', upload.single('project_image'), async (req, res) => {
   }
 });
 
-app.put('/api/threshold/:id', upload.single('project_image'), async (req, res) => {
+app.put('/api/threshold/:id', async (req, res) => {
+
   try {
     const updateData = {
       title: req.body.title,
@@ -77,11 +69,8 @@ app.put('/api/threshold/:id', upload.single('project_image'), async (req, res) =
       blocks: req.body.blocks ? JSON.parse(req.body.blocks) : req.body.blocks,
     };
 
-    if (req.file) {
-      updateData.project_image = `/uploads/${req.file.filename}`;
-    } else if (req.body.project_image) {
-      updateData.project_image = req.body.project_image;
-    }
+    updateData.project_image = req.body.project_image;
+
 
     const updatedThreshold = await Threshold.findByIdAndUpdate(
       req.params.id,
