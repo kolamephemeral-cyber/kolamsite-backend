@@ -38,6 +38,7 @@ app.post('/api/threshold', async (req, res) => {
     title: req.body.title,
     desc: req.body.desc,
     content: req.body.content,
+    date: req.body.date,
     blocks: req.body.blocks || [],
   });
 
@@ -57,6 +58,7 @@ app.put('/api/threshold/:id', async (req, res) => {
         title: req.body.title,
         desc: req.body.desc,
         content: req.body.content,
+        date: req.body.date,
         blocks: req.body.blocks,
       },
       { new: true }
@@ -99,6 +101,7 @@ app.post('/api/kolamnotebook', async (req, res) => {
     start_date: req.body.start_date,
     end_date: req.body.end_date,
     project_image: req.body.project_image,
+    date: req.body.date,
     blocks: req.body.blocks || [],
   });
 
@@ -120,6 +123,7 @@ app.put('/api/kolamnotebook/:id', async (req, res) => {
         start_date: req.body.start_date,
         end_date: req.body.end_date,
         project_image: req.body.project_image,
+        date: req.body.date,
         blocks: req.body.blocks,
       },
       { new: true }
