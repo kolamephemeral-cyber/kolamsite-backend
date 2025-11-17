@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const thresholdSchema = new mongoose.Schema({
+const resourcesSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -29,4 +29,4 @@ const thresholdSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Threshold_data', thresholdSchema);
+module.exports = mongoose.model('Resources', resourcesSchema);

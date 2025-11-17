@@ -24,9 +24,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDB connected to Kolam_site'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Import Threshold model
+// Import models
 const Threshold = require('./models/Threshold');
 const KolamNotebook = require('./models/KolamNotebook');
+const Resources = require('./models/Resources');
 
 // Routes
 app.get('/api/threshold', async (req, res) => {
@@ -42,12 +43,9 @@ app.post('/api/threshold', async (req, res) => {
 
   const threshold = new Threshold({
     title: req.body.title,
-    desc: req.body.desc,
-    content: req.body.content,
     date: req.body.date,
     project_image: req.body.project_image,
-
-    blocks: req.body.blocks ? JSON.parse(req.body.blocks) : [],
+    blocks: req.body.blocks || [],
   });
 
   try {
@@ -63,10 +61,8 @@ app.put('/api/threshold/:id', async (req, res) => {
   try {
     const updateData = {
       title: req.body.title,
-      desc: req.body.desc,
-      content: req.body.content,
       date: req.body.date,
-      blocks: req.body.blocks ? JSON.parse(req.body.blocks) : req.body.blocks,
+      blocks: req.body.blocks || [],
     };
 
     updateData.project_image = req.body.project_image;
@@ -111,11 +107,9 @@ app.get('/api/kolamnotebook', async (req, res) => {
 app.post('/api/kolamnotebook', async (req, res) => {
   const notebook = new KolamNotebook({
     project_title: req.body.project_title,
-    description: req.body.description,
     start_date: req.body.start_date,
     end_date: req.body.end_date,
     project_image: req.body.project_image,
-    date: req.body.date,
     blocks: req.body.blocks || [],
   });
 
@@ -133,11 +127,9 @@ app.put('/api/kolamnotebook/:id', async (req, res) => {
       req.params.id,
       {
         project_title: req.body.project_title,
-        description: req.body.description,
         start_date: req.body.start_date,
         end_date: req.body.end_date,
         project_image: req.body.project_image,
-        date: req.body.date,
         blocks: req.body.blocks,
       },
       { new: true }
@@ -158,6 +150,65 @@ app.delete('/api/kolamnotebook/:id', async (req, res) => {
       return res.status(404).json({ message: 'Kolam Notebook not found' });
     }
     res.json({ message: 'Kolam Notebook deleted' });
+h  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Resources Routes
+app.get('/api/resources', async (req, res) => {
+  try {
+    const resources = await Resources.find();
+    res.json(resources);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/resources', async (req, res) => {
+  const resource = new Resources({
+    title: req.body.title,
+    date: req.body.date,
+    project_image: req.body.project_image,
+    blocks: req.body.blocks || [],
+  });
+
+  try {
+    const newResource = await resource.save();
+    res.status(201).json(newResource);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.put('/api/resources/:id', async (req, res) => {
+  try {
+    const updatedResource = await Resources.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        date: req.body.date,
+        project_image: req.body.project_image,
+        blocks: req.body.blocks,
+      },
+      { new: true }
+    );
+    if (!updatedResource) {
+      return res.status(404).json({ message: 'Resource not found' });
+    }
+    res.json(updatedResource);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete('/api/resources/:id', async (req, res) => {
+  try {
+    const deletedResource = await Resources.findByIdAndDelete(req.params.id);
+    if (!deletedResource) {
+      return res.status(404).json({ message: 'Resource not found' });
+    }
+    res.json({ message: 'Resource deleted' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

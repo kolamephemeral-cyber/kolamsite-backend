@@ -5,10 +5,6 @@ const kolamNotebookSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
   start_date: {
     type: String,
     required: true,
@@ -19,11 +15,6 @@ const kolamNotebookSchema = new mongoose.Schema({
   },
   project_image: {
     type: String,
-    required: true,
-  },
-  date: {
-    type: String,
-    required: true,
   },
   blocks: [{
     type: {
