@@ -150,7 +150,7 @@ app.delete('/api/kolamnotebook/:id', async (req, res) => {
       return res.status(404).json({ message: 'Kolam Notebook not found' });
     }
     res.json({ message: 'Kolam Notebook deleted' });
-h  } catch (error) {
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });

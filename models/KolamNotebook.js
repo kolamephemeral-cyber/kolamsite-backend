@@ -19,7 +19,7 @@ const kolamNotebookSchema = new mongoose.Schema({
   blocks: [{
     type: {
       type: String,
-      enum: ['image', 'paragraph'],
+      enum: ['image', 'paragraph', 'video', 'youtube', 'link'],
       required: true,
     },
     content: {
